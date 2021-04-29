@@ -6,3 +6,4 @@ steganography. This implementation was made using Java programming language.
 Authors:
 
 - Irving Alain Aguilar Perez - A01703171
+- Randy Hazael Jiménez Arriaga - A01251333
