@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
  */
 
 public class Main extends AES{
-    String KEY = "Randy";
     public static void main(String[] args) {
         String msg = "";
         String msgToEncrypt = "";
