@@ -13,6 +13,7 @@ public class AES {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             md.digest(strKey);
             strKey = Arrays.copyOf(strKey, 16);
+            System.out.println(strKey);
             SecretKeySpec secretKeySpec = new SecretKeySpec(strKey, "AES");
             return secretKeySpec;
         } catch (Exception e) {
