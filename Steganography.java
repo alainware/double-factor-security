@@ -61,13 +61,16 @@ public class Steganography extends AES {
 	}
 	
 	// extract secret information/Text from a "cover image"
-	public static void extractText(BufferedImage image, int length) {
+	public static void extractText(BufferedImage image, int length, String uKey) throws Exception {
 		System.out.print("Extracting: ");
 		int bitMsk = 0x00000001;	// define the mask bit used to get the digit
 		int x = 0;					// define the starting pixel x
 		int y = 0;					// define the starting pixel y
 		int flag;
 		char[] c = new char[length] ;	// define a character array to store the secret information
+		StringBuilder word = new StringBuilder("");
+		String decode = "";
+		String decData = "";
 		for(int i = 0; i < length; i++) {	
 			int bit = 0;
 			
@@ -93,9 +96,17 @@ public class Steganography extends AES {
 				}				
 			}
 			c[i] = (char) bit;	// represent the ASCII number by characters
-			System.out.print(c[i]);
+			//System.out.print(c[i]);
+			word.append(c[i]);
 		}
-                System.out.println("");
+		//System.out.println(word);
+		AES aesDec = new AES(uKey);
+		decode = word.toString();
+		decData = aesDec.decryptAES(decode);
+		System.out.println("Message was decrypted succesfully!"); 
+		System.out.println("...");            
+		System.out.println("The message is: " + decData);
+		System.out.println("");
 	}
 	
 	public static void main(String[] args) {
@@ -162,7 +173,12 @@ public class Steganography extends AES {
                                     JFrame frame = new JFrame("Text Steganography");
                                     JPanel panel = new JPanel();
                                     JLabel label1 = new JLabel(new ImageIcon(originalImageText));
-                                    extractText(ImageIO.read(new File("textEmbedded.png")), s.get().length());
+									System.out.println("Please enter a 16 character key: ");
+									uKey = sc.nextLine();
+									while (checkKey(uKey) != true) {
+										uKey = sc.nextLine();
+									}
+                                    extractText(ImageIO.read(new File("textEmbedded.png")), s.get().length(), uKey);
                                     JLabel label2 = new JLabel(new ImageIcon(coverImageText));
                                     panel.add(label1);
                                     panel.add(label2);
