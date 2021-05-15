@@ -7,9 +7,13 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Steganography {
+public class Steganography extends AES {
 
-  // embed secret information/TEXT into a "cover image"
+  public Steganography(String key) {
+		super(key);
+	}
+
+	// embed secret information/TEXT into a "cover image"
 	public static BufferedImage embedText(BufferedImage image, String text) {
 		int bitMsk = 0x00000001;	// define the mask bit used to get the digit
 		int bit;				// define a integer number to represent the ASCII number of a character
@@ -95,8 +99,12 @@ public class Steganography {
 	}
 	
 	public static void main(String[] args) {
-                AtomicReference<String> s = new AtomicReference<>();
-                Scanner sc = new Scanner(System.in);
+		AtomicReference<String> s = new AtomicReference<>();
+		Scanner sc = new Scanner(System.in);
+		String uKey = "";
+		String msg = "";
+		String encData = "";
+		//String decData = "";
 		int op;	
                 
 		BufferedImage originalImageText = null;
@@ -113,9 +121,21 @@ public class Steganography {
                                     URL path = Steganography.class.getResource("cover.jpg");
                                     originalImageText = ImageIO.read(new File(path.getFile()));
                                     coverImageText = ImageIO.read(new File(path.getFile()));
-			
-                                    System.out.print("Embedding: ");
-                                    s.set(sc.nextLine());
+									System.out.print("Embedding: ");
+									// [START] AES Part
+									System.out.println("Please enter a 16 character key: ");
+									uKey = sc.nextLine();
+									while (checkKey(uKey) != true) {
+										uKey = sc.nextLine();
+									}
+									AES aesEnc = new AES(uKey);
+									System.out.println("Please write a message to hide: ");
+									msg = sc.nextLine();
+									encData = aesEnc.encryptAES(msg);
+									System.out.println("Message was encrypted succesfully!");
+									System.out.println("The message is: " + encData);
+									// [END] AES Part																
+                                    s.set(encData);
                                     coverImageText = embedText(coverImageText, s.get());  // embed the secret information
                                     JFrame frame = new JFrame("Text Steganography");
                                     JPanel panel = new JPanel();
@@ -161,7 +181,7 @@ public class Steganography {
                 } catch (Exception e) {
                     System.out.println("System error!");
                 }
-				
+		sc.close();	
 	}
         
         public static void menu() {
@@ -175,4 +195,12 @@ public class Steganography {
             System.out.println("3. Exit");
             System.out.print("Option: ");
         }
+		public static boolean checkKey(String uKey) {
+			if (uKey.length() == 16) {
+				System.out.println("Key - OK!");
+				return true;
+			} else {
+				return false;
+			}
+		}
 }
