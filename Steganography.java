@@ -18,7 +18,7 @@ public class Steganography extends AES {
 		int bit;				// define a integer number to represent the ASCII number of a character
 		int x = 0;				// define the starting pixel x
 		int y = 0;				// define the starting pixel y
-                int txtLen = text.length();
+		int txtLen = text.length();
 		for(int i = 0; i < txtLen; i++) {			
 			bit = (int) text.charAt(i);		// get the ASCII number of a character
 			for(int j = 0; j < 8; j++) {
