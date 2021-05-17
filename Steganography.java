@@ -193,7 +193,7 @@ public class Steganography extends AES {
 									while (checkKey(uKey) != true) {
 										uKey = sc.nextLine();
 									}
-                                    extractText(ImageIO.read(new File("textEmbedded.png")), s.get().length(), uKey);
+                                    extractText(ImageIO.read(new File("textEmbedded.png")), 100, uKey);
                                     JLabel label2 = new JLabel(new ImageIcon(coverImageText));
                                     panel.add(label1);
                                     panel.add(label2);
@@ -210,7 +210,8 @@ public class Steganography extends AES {
                     } while (op != 3);
 
                 } catch (Exception e) {
-                    System.out.println("System error!");
+                    //System.out.println("System error!");
+					e.printStackTrace();
                 }
 		sc.close();	
 	}

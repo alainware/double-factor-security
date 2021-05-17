@@ -27,6 +27,10 @@ public class Main extends AES{
                     AES aesEnc = new AES(uKey);
                     System.out.println("Please write a message to hide: ");
                     msg = sc.nextLine();
+                    while(msg.length() == 0){
+                        System.out.println("Please write a valid message: ");
+                        msg = sc.nextLine();
+                    }
                     encData = aesEnc.encryptAES(msg);
                     System.out.println("Message was encrypted succesfully!");
                     System.out.println("The message is: " + encData); 
@@ -40,6 +44,10 @@ public class Main extends AES{
                     AES aesDec = new AES(uKey);
                     System.out.println("Please write the secret message: ");
                     msg = sc.nextLine();
+                    while(msg.length() == 0){
+                        System.out.println("Please write a valid message: ");
+                        msg = sc.nextLine();
+                    }
                     decData = aesDec.decryptAES(msg);
                     System.out.println("Message was decrypted succesfully!"); 
                     System.out.println("...");            
