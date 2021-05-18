@@ -1,58 +1,8 @@
 import java.util.Arrays;
-import java.util.Scanner;
 public class MultiAES extends AES{
 
     public MultiAES(String key) {
         super(key);
-    }
-    private static Scanner sc = new Scanner(System.in);
-    private static String uKey = "";
-    private static String msg = "";
-    public static void main(String[] args) {
-        int option = 0;
-        try {
-            do {
-                menu();
-                option = sc.nextInt();
-                switch (option) {
-                    case 1:
-                    System.out.println("Please enter a 16 character key: ");
-                    uKey = sc.nextLine();
-                    while (checkKey(uKey) != true) {
-                        uKey = sc.nextLine();
-                    }
-                    System.out.println("Please write a message to hide: ");
-                    msg = sc.nextLine();
-                    while(msg.length() == 0){
-                        System.out.println("Please write a valid message: ");
-                        msg = sc.nextLine();
-                    }
-                    System.out.println("\n\nTop secret message: " + encrypt(msg, uKey));
-                        break;
-                    case 2:
-                    System.out.println("Please enter a 16 character key: ");
-                    uKey = sc.nextLine();
-                    while (checkKey(uKey) != true) {
-                        uKey = sc.nextLine();
-                    }
-                    System.out.println("Please write the secret message: ");
-                    msg = sc.nextLine();
-                    while(msg.length() == 0){
-                        System.out.println("Please write a valid message: ");
-                        msg = sc.nextLine();
-                    }
-                    System.out.println("\n\nTop secret message: " + decrypt(msg, uKey));
-                        break;                
-                    default:
-                        break;
-                }
-            } while (option != 3);
-
-        } catch (Exception e) {
-            System.out.println("System error!");
-        }
-        sc.close();
-
     }
 
     public static String[] addToArray(String[] arr, String string) {
@@ -60,7 +10,7 @@ public class MultiAES extends AES{
         arr[arr.length - 1] = string; // Assign 40 to the last element
         return arr;
     }
-    
+
     public static boolean checkKey(String uKey) {
         if (uKey.length() == 16) {
             System.out.println("Key - OK!");
@@ -151,15 +101,5 @@ public class MultiAES extends AES{
         /*
         [END] Decrypting loop
         */
-    }
-    public static void menu() {
-        System.out.println("==============================");
-        System.out.println("Welcome to GunmetalCypher v0.1");
-        System.out.println("==============================");
-        System.out.println("\n");
-        System.out.println("1. Encrypt message");
-        System.out.println("2. Decrypt message");
-        System.out.println("3. Exit");
-        System.out.print("Option: ");
     }
 }
