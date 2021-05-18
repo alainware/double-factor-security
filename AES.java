@@ -31,7 +31,6 @@ public class AES {
         byte [] decodedValue = decoder.decode(encryptedData);
         byte [] decoderMessage = c.doFinal(decodedValue);
         String decryptedStrMessage = new String(decoderMessage);
-        System.out.println(decryptedStrMessage);
         return decryptedStrMessage;
     }
     // Generate key for AES
