@@ -19,8 +19,6 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Steganography extends AES {
 
@@ -102,37 +100,37 @@ public class Steganography extends AES {
 		 * [END] Variables for extractText method
 		 */
                 
-                //A single digit is extracted for comparison
-                int bit = 0;
+		//A single digit is extracted for comparison
+		int bit = 0;
 			
-			// 8 digits form a character
-			for(int j = 0; j < 8; j++) {				
-				if(x < image.getWidth()) {
-					flag = image.getRGB(x, y) & bitMsk;	// get the last digit of the pixel
-					x++;
-				}
-				else {
-					x = 0;
-					y++;
-					flag = image.getRGB(x, y) & bitMsk;	// get the last digit of the pixel
-				}
-				
-				// store the extracted digits into an integer as ASCII
-				if(flag == 1) {					
-					bit = bit >> 1;	
-					bit = bit | 0x80;
-				} 
-				else {					
-					bit = bit >> 1;
-				}				
+		// 8 digits form a character
+		for(int j = 0; j < 8; j++) {				
+			if(x < image.getWidth()) {
+				flag = image.getRGB(x, y) & bitMsk;	// get the last digit of the pixel
+				x++;
 			}
-			c.add((char) bit);	// Parse the ASCII to characters
-			word.append(c.get(0)); // Append characters to the word StringBuilder
+			else {
+				x = 0;
+				y++;
+				flag = image.getRGB(x, y) & bitMsk;	// get the last digit of the pixel
+			}
+			
+			// store the extracted digits into an integer as ASCII
+			if(flag == 1) {					
+				bit = bit >> 1;	
+				bit = bit | 0x80;
+			} 
+			else {					
+				bit = bit >> 1;
+			}				
+		}
+		c.add((char) bit);	// Parse the ASCII to characters
+		word.append(c.get(0)); // Append characters to the word StringBuilder
                         
-                        //System.out.println(word.toString());
+		//System.out.println(word.toString());
                      
-                //The rest of the string is extracted
-                int i = 0;
+		//The rest of the string is extracted
+		int i = 0;
 		while(word.toString().charAt(i) != '}') {
 			
 			for(int j = 0; j < 8; j++) {				
@@ -154,19 +152,19 @@ public class Steganography extends AES {
 					bit = bit >> 1;
 				}				
 			}
-			c.add((char) bit);
-			word.append(c.get(i));
-                        i++;
+		c.add((char) bit);
+		word.append(c.get(i));
+		i++;
 		}
                 
-                //Delete the duplicate character
-                word.deleteCharAt(0);
-                //Delete the delimiter
-                word.deleteCharAt(word.length()-1);
+		//Delete the duplicate character
+		word.deleteCharAt(0);
+		//Delete the delimiter
+		word.deleteCharAt(word.length()-1);
                 
 		decode = word.toString(); // Convert StringBuilder object to String type
 		decData = aesDec.decryptAES(decode); // Decrypt message using AES
-                JOptionPane.showMessageDialog(null, "Message was decrypted successfully! The message is: " + decData);
+		JOptionPane.showMessageDialog(null, "Message was decrypted successfully! The message is: " + decData);
 	}
 	
 	public static void main(String[] args) {
@@ -176,7 +174,7 @@ public class Steganography extends AES {
 		// Integer for menu options
 		//int op;	
 		AtomicReference<String> s = new AtomicReference<>(); // An atomic reference to a variable for the name of the image file which can be modified anywhere
-                AtomicReference<String> filePath = new AtomicReference<>();
+		AtomicReference<String> filePath = new AtomicReference<>();
 		// Scanner variable
 		//Scanner sc = new Scanner(System.in);
 		// String variables
@@ -188,7 +186,7 @@ public class Steganography extends AES {
 		*/
 		
                 
-                JFileChooser fc = new JFileChooser();
+		JFileChooser fc = new JFileChooser();
         JFrame frame = new JFrame("Steganography & AES");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     
@@ -239,87 +237,87 @@ public class Steganography extends AES {
         embedButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ev) {
-                BufferedImage originalImageText = null; //Original unaltered image
-		BufferedImage coverImageText = null; //Image to embed the secret message
+			BufferedImage originalImageText = null; //Original unaltered image
+			BufferedImage coverImageText = null; //Image to embed the secret message
                 
-                int returnVal = fc.showOpenDialog(frame);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File file = fc.getSelectedFile();
-                    filePath.set(file.getPath());
-                    try {
-                        originalImageText = ImageIO.read(file);
-                        coverImageText = ImageIO.read(file);
-                        
-                        // [START] AES Part
-                        String uKey = ""; // String to store the 16 character key given by the user
-                        String msg = ""; // String to store the message to hide
-                        String encData = ""; // String to store the hidden message (encrypted with AES)
-                        
-                        uKey = JOptionPane.showInputDialog("Please enter a 16 character key: "); // Input key
-                        // Check if the key size is 16 character length
-                        while (checkKey(uKey) != true) {
-                            uKey = JOptionPane.showInputDialog("Please enter a 16 character key: ");
-                        }
-                        
-                        // Create AES object passing the user defined key as a parameter
-                        AES aesEnc = new AES(uKey);
-                        msg = JOptionPane.showInputDialog("Please write a message to hide: ");; // Input message
-                        encData = aesEnc.encryptAES(msg); // Encode data
-                        JOptionPane.showMessageDialog(null, "Message was encrypted successfully! The message is: " + encData);
-                        // [END] AES Part																
-                        s.set(encData);
-                        coverImageText = embedText(coverImageText, s.get());  // embed the encrypted message to the image
-                        JFrame frame = new JFrame("Text Steganography");
-                        JPanel panel = new JPanel();
-                        JLabel label1 = new JLabel(new ImageIcon(originalImageText));
-                        JLabel label2 = new JLabel(new ImageIcon(coverImageText));
-                        panel.add(label1);
-                        panel.add(label2);
-                        frame.add(panel);
-                        frame.pack();
-                        frame.setVisible(true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    System.out.println("Operation is CANCELLED");
-                }
-            }
+			int returnVal = fc.showOpenDialog(frame);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = fc.getSelectedFile();
+				filePath.set(file.getPath());
+				try {
+					originalImageText = ImageIO.read(file);
+					coverImageText = ImageIO.read(file);
+					
+					// [START] AES Part
+					String uKey = ""; // String to store the 16 character key given by the user
+					String msg = ""; // String to store the message to hide
+					String encData = ""; // String to store the hidden message (encrypted with AES)
+					
+					uKey = JOptionPane.showInputDialog("Please enter a 16 character key: "); // Input key
+					// Check if the key size is 16 character length
+					while (checkKey(uKey) != true) {
+						uKey = JOptionPane.showInputDialog("Please enter a 16 character key: ");
+					}
+					
+					// Create AES object passing the user defined key as a parameter
+					AES aesEnc = new AES(uKey);
+					msg = JOptionPane.showInputDialog("Please write a message to hide: ");; // Input message
+					encData = aesEnc.encryptAES(msg); // Encode data
+					JOptionPane.showMessageDialog(null, "Message was encrypted successfully! The message is: " + encData);
+					// [END] AES Part																
+					s.set(encData);
+					coverImageText = embedText(coverImageText, s.get());  // embed the encrypted message to the image
+					JFrame frame = new JFrame("Text Steganography");
+					JPanel panel = new JPanel();
+					JLabel label1 = new JLabel(new ImageIcon(originalImageText));
+					JLabel label2 = new JLabel(new ImageIcon(coverImageText));
+					panel.add(label1);
+					panel.add(label2);
+					frame.add(panel);
+					frame.pack();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println("Operation is CANCELLED");
+			}
+		}
         });
     
         extractButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ev) {
-                BufferedImage originalImageText = null; //Original unaltered image
-		BufferedImage coverImageText = null; //Image to embed the secret message
+			BufferedImage originalImageText = null; //Original unaltered image
+			BufferedImage coverImageText = null; //Image to embed the secret message
                 
-                String uKey = "";
+			String uKey = "";
                 
-                int returnVal = fc.showOpenDialog(frame);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File file = fc.getSelectedFile();
-                    filePath.set(file.getPath());
-                    try {
-                        try {
-                            originalImageText = ImageIO.read(file);
-                            coverImageText = ImageIO.read(file);
+			int returnVal = fc.showOpenDialog(frame);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = fc.getSelectedFile();
+				filePath.set(file.getPath());
+				try {
+					try {
+						originalImageText = ImageIO.read(file);
+						coverImageText = ImageIO.read(file);
 
-                            // extract and decrypt the message
-                            uKey = JOptionPane.showInputDialog("Please enter the 16 character key: ");
-                            while (checkKey(uKey) != true) {
-                                uKey = JOptionPane.showInputDialog("Please enter the 16 character key: ");
-                            }
-                            extractText(ImageIO.read(file), uKey);		
-                            } catch(IOException e) {		
-                                System.out.println("Image not found");
-                            }
-                        } catch (Exception e){
-                            e.printStackTrace();
-                        }
-                } else {
-                    System.out.println("Operation is CANCELLED");
-                }
-            }
+						// extract and decrypt the message
+						uKey = JOptionPane.showInputDialog("Please enter the 16 character key: ");
+						while (checkKey(uKey) != true) {
+							uKey = JOptionPane.showInputDialog("Please enter the 16 character key: ");
+						}
+						extractText(ImageIO.read(file), uKey);		
+						} catch(IOException e) {		
+							System.out.println("Image not found");
+						}
+					} catch (Exception e){
+						e.printStackTrace();
+					}
+			} else {
+				System.out.println("Operation is CANCELLED");
+			}
+		}
         });
         
         frame.getContentPane().add(mainPanel);
@@ -328,11 +326,11 @@ public class Steganography extends AES {
 	}
         
 	public static boolean checkKey(String uKey) {
-            if (uKey.length() == 16) {
-		System.out.println("Key - OK!");
-		return true;
-            } else {
-		return false;
-            }
+		if (uKey.length() == 16) {
+			System.out.println("Key - OK!");
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

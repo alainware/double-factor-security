@@ -1,3 +1,7 @@
+/**
+ *
+ * @author irvingpercam
+ */
 import java.util.Arrays;
 public class MultiAES extends AES{
 
@@ -11,14 +15,13 @@ public class MultiAES extends AES{
         return arr;
     }
 
-    public static boolean checkKey(String uKey) {
-        if (uKey.length() == 16) {
-            System.out.println("Key - OK!");
-            return true;
-        } else {
-            System.out.println("Key ERROR!\nThe key length must be of 16 characters!");
-            return false;
-        }
+	public static boolean checkKey(String uKey) {
+		if (uKey.length() == 16) {
+			System.out.println("Key - OK!");
+			return true;
+		} else {
+			return false;
+		}
     }
 
     public static String encrypt(String msg, String uKey) {
