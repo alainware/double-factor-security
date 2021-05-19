@@ -1,14 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package main;
-
-/**
- *
- * @author randy
- */
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,177 +7,147 @@ import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Steganography extends AES {
-
-  public Steganography(String key) {
+    
+    public Steganography(String key) {
     super(key);
-}
+    }
 
 	// embed the message into an image
-	public static BufferedImage embedText(BufferedImage image, String text) {
-                StringBuilder word = new StringBuilder(text);
-                //Add a delimiter for the message
-                word.append("}");
-                text = word.toString();
-		int bitMsk = 0x00000001;	// bit mask to get the digits
-		int bit;				// integer that represents the ASCII of a character
-		int x = 0;				// starting x pixel
-		int y = 0;				// starting y pixel
-		int txtLen = text.length();
-		for(int i = 0; i < txtLen; i++) {			
-			bit = (int) text.charAt(i);		// get the ASCII of a character at position i
-			for(int j = 0; j < 8; j++) {
-				int flag = bit & bitMsk;	// get 1 digit from the character
-				if(flag == 1) {	
-					if(x < image.getWidth()) {
-						image.setRGB(x, y, image.getRGB(x, y) | 0x00000001); 	// store the 1 bit into a pixel's last digit
-						x++;
-					}
-					else {
-						x = 0;
-						y++;
-						image.setRGB(x, y, image.getRGB(x, y) | 0x00000001); 	// store the 1 bit into a pixel's last digit
-					}
-				} 
-				else {	
-					if(x < image.getWidth()) {
-						image.setRGB(x, y, image.getRGB(x, y) & 0xFFFFFFFE);	// store the 0 bit into a pixel's last digit
-						x++;
-					}
-					else {
-						x = 0;
-						y++;
-						image.setRGB(x, y, image.getRGB(x, y) & 0xFFFFFFFE);	// store the 0 bit into a pixel's last digit
-					}
-				}
-				bit = bit >> 1;				// get the next digit
-			}			
+    public static BufferedImage embedText(BufferedImage image, String text) {
+        StringBuilder word = new StringBuilder(text);
+        //Add a delimiter for the message
+        word.append("}");
+        text = word.toString();
+	int bitMsk = 0x00000001;	// bit mask to get the digits
+	int bit;				// integer that represents the ASCII of a character
+	int x = 0;				// starting x pixel
+	int y = 0;				// starting y pixel
+	int txtLen = text.length();
+	for(int i = 0; i < txtLen; i++) {			
+            bit = (int) text.charAt(i);		// get the ASCII of a character at position i
+            for(int j = 0; j < 8; j++) {
+                int flag = bit & bitMsk;	// get 1 digit from the character
+		if(flag == 1) {	
+                    if(x < image.getWidth()) {
+                        image.setRGB(x, y, image.getRGB(x, y) | 0x00000001); 	// store the 1 bit into a pixel's last digit
+                        x++;
+                    } else {
+                        x = 0;
+                        y++;
+                        image.setRGB(x, y, image.getRGB(x, y) | 0x00000001); 	// store the 1 bit into a pixel's last digit
+                    }
+		} else {	
+                    if(x < image.getWidth()) {
+                    image.setRGB(x, y, image.getRGB(x, y) & 0xFFFFFFFE);	// store the 0 bit into a pixel's last digit
+                    x++;
+                    } else {
+                        x = 0;
+			y++;
+			image.setRGB(x, y, image.getRGB(x, y) & 0xFFFFFFFE);	// store the 0 bit into a pixel's last digit
+                    }
 		}
-		
-		// save the image which contains the text to a new image file
-		try {
-			File outFile = new File("textEmbedded.png");	
-			ImageIO.write(image, "png", outFile);	
-		} catch (IOException e) {
-			
-		}		
-		return image;
+		bit = bit >> 1;				// get the next digit
+            }			
 	}
+		
+	// save the image which contains the text to a new image file
+	try {
+            File outFile = new File("textEmbedded.png");	
+            ImageIO.write(image, "png", outFile);	
+	} catch (IOException e) {
+			
+	}		
+	return image;
+    }
         
-	// extract and decrypt the message from an image
-	public static void extractText(BufferedImage image, String uKey) throws Exception {
-		System.out.print("Extracting: ");
-		/**
-		 * [START] Variables for extractText method
-		 */
-		// Integer variables
-		int bitMsk = 0x00000001;	// bit mask to get the digits
-		int x = 0;					// starting x pixel
-		int y = 0;					// starting y pixel
-		int flag;
-		// Char variables
-		List<Character> c = new ArrayList<Character>();	// Array to store the message extracted from the image character by character
-		// String variables
-		StringBuilder word = new StringBuilder(""); // String to append the characters of variable 'c' in order to build the message
-		String decode = ""; // String to parse the 'word' StringBuilder object
-		String decData = ""; //String to store the decoded message generated by AES decryption
-		// AES variable
-		AES aesDec = new AES(uKey); // Create an AES object passing the key as a parameter
-		/**
-		 * [END] Variables for extractText method
-		 */
+    // extract and decrypt the message from an image
+    public static void extractText(BufferedImage image, String uKey) throws Exception {
+        System.out.print("Extracting: ");
+	/**
+	 * [START] Variables for extractText method
+	 */
+	// Integer variables
+	int bitMsk = 0x00000001;	// bit mask to get the digits
+	int x = 0;					// starting x pixel
+	int y = 0;					// starting y pixel
+	int flag;
+	// Char variables
+	List<Character> c = new ArrayList<Character>();	// ArrayList to store the message extracted from the image character by character
+	// String variables
+	StringBuilder word = new StringBuilder(""); // String to append the characters of variable 'c' in order to build the message
+	String decode = ""; // String to parse the 'word' StringBuilder object
+	String decData = ""; //String to store the decoded message generated by AES decryption
+	// AES variable
+	AES aesDec = new AES(uKey); // Create an AES object passing the key as a parameter
+	/**
+	 * [END] Variables for extractText method
+	 */
                 
-                //A single digit is extracted for comparison
-                int bit = 0;
+        //A single digit is extracted for comparison
+        int bit = 0;
 			
-			// 8 digits form a character
-			for(int j = 0; j < 8; j++) {				
-				if(x < image.getWidth()) {
-					flag = image.getRGB(x, y) & bitMsk;	// get the last digit of the pixel
-					x++;
-				}
-				else {
-					x = 0;
-					y++;
-					flag = image.getRGB(x, y) & bitMsk;	// get the last digit of the pixel
-				}
+	// 8 digits form a character
+	for(int j = 0; j < 8; j++) {				
+            if(x < image.getWidth()) {
+                flag = image.getRGB(x, y) & bitMsk;	// get the last digit of the pixel
+                x++;
+            } else {
+                x = 0;
+                y++;
+                flag = image.getRGB(x, y) & bitMsk;	// get the last digit of the pixel
+            }
 				
-				// store the extracted digits into an integer as ASCII
-				if(flag == 1) {					
-					bit = bit >> 1;	
-					bit = bit | 0x80;
-				} 
-				else {					
-					bit = bit >> 1;
-				}				
-			}
-			c.add((char) bit);	// Parse the ASCII to characters
-			word.append(c.get(0)); // Append characters to the word StringBuilder
-                        
-                        //System.out.println(word.toString());
-                     
-                //The rest of the string is extracted
-                int i = 0;
-		while(word.toString().charAt(i) != '}') {
-			
-			for(int j = 0; j < 8; j++) {				
-				if(x < image.getWidth()) {
-					flag = image.getRGB(x, y) & bitMsk;
-					x++;
-				}
-				else {
-					x = 0;
-					y++;
-					flag = image.getRGB(x, y) & bitMsk;
-				}
-				
-				if(flag == 1) {					
-					bit = bit >> 1;	
-					bit = bit | 0x80;
-				} 
-				else {					
-					bit = bit >> 1;
-				}				
-			}
-			c.add((char) bit);
-			word.append(c.get(i));
-                        i++;
-		}
-                
-                //Delete the duplicate character
-                word.deleteCharAt(0);
-                //Delete the delimiter
-                word.deleteCharAt(word.length()-1);
-                
-		decode = word.toString(); // Convert StringBuilder object to String type
-		decData = aesDec.decryptAES(decode); // Decrypt message using AES
-                JOptionPane.showMessageDialog(null, "Message was decrypted successfully! The message is: " + decData);
+            // store the extracted digits into an integer as ASCII
+            if(flag == 1) {					
+                bit = bit >> 1;	
+                bit = bit | 0x80;
+            } else {					
+                bit = bit >> 1;
+            }				
 	}
-	
-	public static void main(String[] args) {
-		/**
-	 	* [START] Variables for extractText method
-		*/
-		// Integer for menu options
-		//int op;	
-		AtomicReference<String> s = new AtomicReference<>(); // An atomic reference to a variable for the name of the image file which can be modified anywhere
-                AtomicReference<String> filePath = new AtomicReference<>();
-		// Scanner variable
-		//Scanner sc = new Scanner(System.in);
-		// String variables
-		
-		
-		
-		/**
-	 	* [END] Variables for extractText method
-		*/
-		
+	c.add((char) bit);	// Parse the ASCII to characters
+	word.append(c.get(0)); // Append characters to the word StringBuilder
+                     
+        //The rest of the string is extracted
+        int i = 0;
+	while(word.toString().charAt(i) != '}') {	
+            for(int j = 0; j < 8; j++) {				
+		if(x < image.getWidth()) {
+                    flag = image.getRGB(x, y) & bitMsk;
+                    x++;
+		} else {
+                    x = 0;
+                    y++;
+                    flag = image.getRGB(x, y) & bitMsk;
+		}
+				
+		if(flag == 1) {					
+                    bit = bit >> 1;	
+                    bit = bit | 0x80;
+		} 
+		else {					
+                    bit = bit >> 1;
+		}				
+	}
+	c.add((char) bit);
+	word.append(c.get(i));
+        i++;
+	}
                 
-                JFileChooser fc = new JFileChooser();
+        //Delete the duplicate character
+        word.deleteCharAt(0);
+        //Delete the delimiter
+        word.deleteCharAt(word.length()-1);
+                
+	decode = word.toString(); // Convert StringBuilder object to String type
+	decData = aesDec.decryptAES(decode); // Decrypt message using AES
+        JOptionPane.showMessageDialog(null, "Message was decrypted successfully! The message is: " + decData);
+    }
+	
+    public static void main(String[] args) {      
+        JFileChooser fc = new JFileChooser();
         JFrame frame = new JFrame("Steganography & AES");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     
@@ -240,12 +199,11 @@ public class Steganography extends AES {
             @Override
             public void actionPerformed(ActionEvent ev) {
                 BufferedImage originalImageText = null; //Original unaltered image
-		BufferedImage coverImageText = null; //Image to embed the secret message
+                BufferedImage coverImageText = null; //Image to embed the secret message
                 
                 int returnVal = fc.showOpenDialog(frame);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
-                    filePath.set(file.getPath());
                     try {
                         originalImageText = ImageIO.read(file);
                         coverImageText = ImageIO.read(file);
@@ -267,8 +225,7 @@ public class Steganography extends AES {
                         encData = aesEnc.encryptAES(msg); // Encode data
                         JOptionPane.showMessageDialog(null, "Message was encrypted successfully! The message is: " + encData);
                         // [END] AES Part																
-                        s.set(encData);
-                        coverImageText = embedText(coverImageText, s.get());  // embed the encrypted message to the image
+                        coverImageText = embedText(coverImageText, encData);  // embed the encrypted message to the image
                         JFrame frame = new JFrame("Text Steganography");
                         JPanel panel = new JPanel();
                         JLabel label1 = new JLabel(new ImageIcon(originalImageText));
@@ -291,14 +248,13 @@ public class Steganography extends AES {
             @Override
             public void actionPerformed(ActionEvent ev) {
                 BufferedImage originalImageText = null; //Original unaltered image
-		BufferedImage coverImageText = null; //Image to embed the secret message
+                BufferedImage coverImageText = null; //Image to embed the secret message
                 
                 String uKey = "";
                 
                 int returnVal = fc.showOpenDialog(frame);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
-                    filePath.set(file.getPath());
                     try {
                         try {
                             originalImageText = ImageIO.read(file);
@@ -310,12 +266,12 @@ public class Steganography extends AES {
                                 uKey = JOptionPane.showInputDialog("Please enter the 16 character key: ");
                             }
                             extractText(ImageIO.read(file), uKey);		
-                            } catch(IOException e) {		
-                                System.out.println("Image not found");
-                            }
-                        } catch (Exception e){
-                            e.printStackTrace();
+                        } catch(IOException e) {		
+                            System.out.println("Image not found");
                         }
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
                 } else {
                     System.out.println("Operation is CANCELLED");
                 }
@@ -325,14 +281,14 @@ public class Steganography extends AES {
         frame.getContentPane().add(mainPanel);
         frame.pack();
         frame.setVisible(true);	
-	}
+    }
         
-	public static boolean checkKey(String uKey) {
-            if (uKey.length() == 16) {
-		System.out.println("Key - OK!");
-		return true;
-            } else {
-		return false;
-            }
-	}
+    public static boolean checkKey(String uKey) {
+        if (uKey.length() == 16) {
+            System.out.println("Key - OK!");
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
