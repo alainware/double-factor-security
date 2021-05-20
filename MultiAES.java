@@ -15,15 +15,6 @@ public class MultiAES extends AES{
         return arr;
     }
 
-	public static boolean checkKey(String uKey) {
-		if (uKey.length() == 16) {
-			System.out.println("Key - OK!");
-			return true;
-		} else {
-			return false;
-		}
-    }
-
     public static String encrypt(String msg, String uKey) {
         /*
         [START] Encrypting loop
