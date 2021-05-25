@@ -50,12 +50,9 @@ public class AESDecrypt implements Runnable{
     public void run(){
         try{
             synchronized(this){
-                Thread.sleep(2000);
                 decryptAES(encryptedData);
-                System.out.println(Thread.currentThread().getName() + " is completed--" + counter++);
             }
         } catch(Exception e){
-            System.out.println("Ha fallao la wea, weon culiao!");
             e.printStackTrace();
         }
     }

@@ -19,9 +19,7 @@ class AESEncrypt implements Runnable {
     void setOther(Thread other) {
         this.other = other;
     }
-    /*void setMessage(String encryptedValue) {
-        this.encryptedValue = encryptedValue;
-    }*/
+
     String getEncryptedValue(){
         return encryptedValue;
     }
@@ -43,12 +41,9 @@ class AESEncrypt implements Runnable {
     public void run() {
         try {
             synchronized(this) {
-                Thread.sleep(1000);
-                encryptAES(messageData);
-                System.out.println(Thread.currentThread().getName() + " is completed--" + counter ++);             
+                encryptAES(messageData);            
             }
         } catch (Exception e) {
-            System.out.println("Ha fallao la wea, weon culiao!");
             e.printStackTrace();
         }
     }

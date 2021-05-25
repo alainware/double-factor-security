@@ -3,12 +3,7 @@
  * @author irvingpercam
  */
 import java.util.Arrays;
-public class MultiAES extends AES{
-
-    public MultiAES(String key) {
-        super(key);
-    }
-
+public class MultiAES{
     public static String[] addToArray(String[] arr, String string) {
         arr = Arrays.copyOf(arr, arr.length + 1);
         arr[arr.length - 1] = string; // Assign 40 to the last element
@@ -19,8 +14,6 @@ public class MultiAES extends AES{
         /*
         [START] Encrypting loop
         */
-        // Create AES Object
-        //AES aesEnc = new AES(uKey);
 
         // Step 1. Convert the message to a String array
 
@@ -32,14 +25,6 @@ public class MultiAES extends AES{
 
         // Step 3. Encrypt each word inside messageArray
 
-        // for (String s : messageArray) {
-        //     try {
-        //         encryptedMessageArray = addToArray(encryptedMessageArray, aesEnc.encryptAES(s));
-        //     } catch (Exception e) {
-        //         System.out.println("Encryption failed for MultiAES class!");
-        //         e.printStackTrace();
-        //     }
-        // }
         AESEncrypt encryptedWords[] = new AESEncrypt[messageArray.length];
         Thread threads[] = new Thread[messageArray.length];
         for (int i = 0; i < messageArray.length; i++) {
@@ -49,8 +34,6 @@ public class MultiAES extends AES{
                 threads[i].join();
                 encryptedMessageArray = addToArray(encryptedMessageArray, encryptedWords[i].getEncryptedValue());
         }
-        
-        System.out.println("Message was encrypted succesfully!");
 
         // Step 4. Append the ecnrypted strings to a StringBuilder
 
@@ -67,9 +50,6 @@ public class MultiAES extends AES{
         /*
         [START] Decrypting loop
         */
-        // Create AES Object
-        AES aesDec = new AES(uKey);
-        
         // Step 1. Convert the message to a String Array
 
         String[] encMessageArray = msg.split("==");
@@ -80,24 +60,15 @@ public class MultiAES extends AES{
 
         // Step 3. Encrypt each word inside messageArray
 
-        for (String string : encMessageArray) {
-            try {
-                decryptedMessageArray = addToArray(decryptedMessageArray, aesDec.decryptAES(string));
-            } catch (Exception e) {
-                System.out.println("Decryption failed for MultiAES class!");
-                e.printStackTrace();
-            }
+        AESDecrypt decryptedWords[] = new AESDecrypt[encMessageArray.length];
+        Thread threads[] = new Thread[encMessageArray.length];
+        for (int i = 0; i < encMessageArray.length; i++) {
+                decryptedWords[i] = new AESDecrypt(uKey, encMessageArray[i]);
+                threads[i] = new Thread(decryptedWords[i]);
+                threads[i].start();
+                threads[i].join();
+                decryptedMessageArray = addToArray(decryptedMessageArray, decryptedWords[i].getDecryptedStrMessage());
         }
-        // AESDecrypt decryptedWords[] = new AESDecrypt[encMessageArray.length];
-        // Thread threads[] = new Thread[encMessageArray.length];
-        // for (int i = 0; i < encMessageArray.length; i++) {
-        //         decryptedWords[i] = new AESDecrypt(uKey, encMessageArray[i]);
-        //         threads[i] = new Thread(decryptedWords[i]);
-        //         threads[i].start();
-        //         threads[i].join();
-        //         decryptedMessageArray = addToArray(decryptedMessageArray, decryptedWords[i].getDecryptedStrMessage());
-        // }
-        System.out.println("Message was decrypted succesfully!");
 
         // Step 4. Append the decrypted strings to a StringBuilder
 
