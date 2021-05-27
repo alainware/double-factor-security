@@ -8,7 +8,6 @@ import java.awt.image.*;
 import javax.imageio.*;
 import javax.swing.*;
 import java.io.*;
-import javafx.embed.swing.JFXPanel;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -45,7 +44,6 @@ public class Main extends Steganography{
     
         topPnl.add(tarea);
         
-        JFXPanel fxPanel = new JFXPanel();
         
         tarea.setText("============================\n"
                 + "Welcome to GunmetalCypher v1.0\n"
@@ -68,7 +66,7 @@ public class Main extends Steganography{
 "               |  | {   }         \\   \\_\\\n" +
 "              '---.o___,'       .o___,'");
         
-        File f = new File("./dragonball.wav");
+        File f = new File("./assets/dragonball.wav");
         AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());  
         Clip clip = AudioSystem.getClip();
         clip.open(audioIn);
