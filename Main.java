@@ -8,9 +8,16 @@ import java.awt.image.*;
 import javax.imageio.*;
 import javax.swing.*;
 import java.io.*;
+import javafx.embed.swing.JFXPanel;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
-public class Main extends Steganography {
-    public static void main(String[] args) {
+public class Main extends Steganography{
+    public static void main(String[] args) throws LineUnavailableException, IOException, UnsupportedAudioFileException {
         JFileChooser fc = new JFileChooser();
         JFrame frame = new JFrame("Steganography & AES");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,8 +45,10 @@ public class Main extends Steganography {
     
         topPnl.add(tarea);
         
+        JFXPanel fxPanel = new JFXPanel();
+        
         tarea.setText("============================\n"
-                + "Welcome to GunmetalCypher v0.1\n"
+                + "Welcome to GunmetalCypher v1.0\n"
                 + "Stegosaurus Special Edition!\n"
                 + "============================\n" + 
 "                         .       .\n" +
@@ -58,6 +67,12 @@ public class Main extends Steganography {
 "               {   \\  +\\         \\  =\\ (        ~ - . _ _ _..---~\n" +
 "               |  | {   }         \\   \\_\\\n" +
 "              '---.o___,'       .o___,'");
+        
+        File f = new File("./dragonball.wav");
+        AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());  
+        Clip clip = AudioSystem.getClip();
+        clip.open(audioIn);
+        
         
         embedButton.addActionListener(new ActionListener() {
             @Override
@@ -87,7 +102,7 @@ public class Main extends Steganography {
                         //AES aesEnc = new AES(uKey);
                         msg = JOptionPane.showInputDialog("Please write a message to hide: ");; // Input message
                         encData = MultiAES.encrypt(msg, uKey); // Encode data
-                        JOptionPane.showMessageDialog(null, "Message was encrypted successfully! The message is: " + encData);
+                        JOptionPane.showMessageDialog(null, "Message was encrypted successfully!\nThe message is:\n" + encData);
                         // [END] AES Part																
                         coverImageText = embedText(coverImageText, encData);  // embed the encrypted message to the image
                         JFrame frame = new JFrame("Text Steganography");
@@ -103,7 +118,7 @@ public class Main extends Steganography {
                         e.printStackTrace();
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Operation was CANCELLED");
+                    JOptionPane.showMessageDialog(null, "Operation is CANCELLED");
                 }
             }
         });
@@ -137,7 +152,7 @@ public class Main extends Steganography {
                         e.printStackTrace();
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Operation was CANCELLED");
+                    JOptionPane.showMessageDialog(null, "Operation is CANCELLED");
                 }
             }
         });
@@ -145,5 +160,14 @@ public class Main extends Steganography {
         frame.getContentPane().add(mainPanel);
         frame.pack();
         frame.setVisible(true);
+        
+        while(true){
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            double gain = 0.15;   
+            float dB = (float) (Math.log(gain) / Math.log(10.0) * 20.0);
+            gainControl.setValue(dB);
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        }
     }
 }
