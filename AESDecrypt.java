@@ -1,6 +1,5 @@
 import java.security.Key;
 import java.util.Base64;
-import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 public class AESDecrypt implements Runnable{
@@ -32,12 +31,10 @@ public class AESDecrypt implements Runnable{
     // Decrypt AES
     public void decryptAES (String encryptedData) throws Exception{
         Key key = generateKey();
-        Cipher c = Cipher.getInstance(ALGORITHM);
-        c.init(Cipher.DECRYPT_MODE, key);
         Base64.Decoder decoder = Base64.getDecoder();
         byte [] decodedValue = decoder.decode(encryptedData);
-        byte [] decoderMessage = c.doFinal(decodedValue);
-        decryptedStrMessage = new String(decoderMessage);
+        byte [] decData = ManAES.decrypt(decodedValue, key.getEncoded());
+        decryptedStrMessage  = new String(decData);
     }
 
     // Generate key for AES

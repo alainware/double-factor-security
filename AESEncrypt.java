@@ -1,6 +1,5 @@
 import java.security.Key;
 import java.util.Base64;
-import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 class AESEncrypt implements Runnable {
     Thread other;
@@ -26,11 +25,9 @@ class AESEncrypt implements Runnable {
     // Encrypt AES
     public void encryptAES (String messageData) throws Exception {
         Key key = generateKey();
-        Cipher c = Cipher.getInstance(ALGORITHM);
-        c.init(Cipher.ENCRYPT_MODE, key);
-        byte [] encVal = c.doFinal(messageData.getBytes("UTF-8"));
+        byte [] encData = ManAES.encrypt(messageData.getBytes("UTF-8"), key.getEncoded());
         Base64.Encoder encoder = Base64.getEncoder();
-        encryptedValue = encoder.encodeToString(encVal);
+        encryptedValue = encoder.encodeToString(encData);
     }
     // Generate key for AES
     private Key generateKey() throws Exception {
