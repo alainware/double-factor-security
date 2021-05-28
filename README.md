@@ -1159,3 +1159,7 @@ Lyer, A. (2019). Image Steganography in Cryptography. May 20, 2021, from Geeksfo
 Muzakir, A. (2017). Example of Least Significant Bit. May 20, 2021, from ResearchGate website: https://www.researchgate.net/figure/Example-of-Least-Significant-Bit-LSB-In-figure-4-seen-bits-LSB-at-1-pixel-of-color_fig3_317306868
 
 Oracle (n.d.). Synchronization. May 20, 2021, from Oracle Java website: https://docs.oracle.com/javase/tutorial/essential/concurrency/sync.html.
+
+## Testing
+
+This [Google sheets document](https://docs.google.com/spreadsheets/d/1p5zESUdh6T1ZlnNViGpqwPI2y0jJbkWIXdJ50XMl0do/edit?usp=sharing) contains tests performed by people who downloaded the program from this repository.
