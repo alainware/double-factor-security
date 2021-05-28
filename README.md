@@ -19,6 +19,7 @@ Authors:
 6. [Paradigm](#Paradigm)
 7. [Conclusion](#Conclusion)
 8. [References](#References)
+9. [Testing](#Testing)
 
 ## Introduction
 
